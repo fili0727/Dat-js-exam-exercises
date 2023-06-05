@@ -7,13 +7,17 @@ let products = [];
 async function start() {
   products = await getData("products.json");
 
-  products.forEach(showProducts);
+  showAllProducts();
 }
 
 async function getData() {
   const data = await fetch("products.json");
   const response = data.json();
   return response;
+}
+
+function showAllProducts() {
+  products.forEach(showProducts);
 }
 
 function showProducts(products) {
@@ -43,6 +47,10 @@ function addToBasketClicked(products) {
 
 // 3. Vis indholdet af kurven på siden (opdatér når der bliver tilføjet et produkt)
 
+function showBasket() {
+  showBasketsTotals();
+  basket.forEach(showProduct);
+}
 function showProduct(obj) {
   console.log(obj);
   const html =
@@ -81,7 +89,7 @@ function addToBasket(product) {
     basket.push(obj);
   }
   document.querySelector("tbody").innerHTML = "";
-  basket.forEach(showProduct);
+  showBasket();
 }
 
 function removeFromBasket(product) {
@@ -94,7 +102,7 @@ function removeFromBasket(product) {
     basket.splice(currentProduct, 1);
   }
   document.querySelector("tbody").innerHTML = "";
-  basket.forEach(showProduct);
+  showBasket();
 }
 
 function showBasketsTotals() {
@@ -103,7 +111,7 @@ function showBasketsTotals() {
 
   let totalInBasket = 0;
   for (const productInBasket of basket) {
-    totalInBasket += productInBasket.count;
+    totalInBasket += productInBasket.antal;
   }
   document.querySelector("#total-in-basket").textContent = totalInBasket;
 
@@ -111,13 +119,18 @@ function showBasketsTotals() {
   let totalWeight = 0;
 
   for (const productInBasket of basket) {
-    totalPrice += productInBasket.product.price * productInBasket.count;
-    totalWeight += productInBasket.product.weight * productInBasket.counts;
+    totalPrice += productInBasket.product.price * productInBasket.antal;
+    totalWeight += productInBasket.product.weight * productInBasket.antal;
   }
   document.querySelector("#total-price").textContent = totalPrice;
   document.querySelector("#total-weight").textContent = totalWeight;
 
-  if (totalWeight < 2000) {
+  console.log(totalPrice);
+  console.log(totalWeight);
+  if (totalWeight > 2000) {
+    document.querySelector(".warning").classList.add("show");
+  } else {
+    document.querySelector(".warning").classList.remove("show");
   }
 }
 // 2. Lav en funktion `addToBasket` der modtager et produkt,
