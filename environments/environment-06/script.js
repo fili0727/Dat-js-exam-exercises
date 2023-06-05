@@ -59,6 +59,13 @@ function showProduct(obj) {
             </tr>`;
 
   document.querySelector("tbody").insertAdjacentHTML("beforeend", html);
+
+  document
+    .querySelector("#basket tbody tr:last-child button.remove")
+    .addEventListener("click", () => removeFromBasket(obj.product));
+  document
+    .querySelector("#basket tbody tr:last-child button.add")
+    .addEventListener("click", () => addToBasket(obj.product));
 }
 
 function addToBasket(product) {
@@ -83,8 +90,34 @@ function removeFromBasket(product) {
     findes.antal--;
   }
   if (findes.antal === 0) {
-    let currentProduct = basket.indexOf(findes);
+    const currentProduct = basket.indexOf(findes);
     basket.splice(currentProduct, 1);
+  }
+  document.querySelector("tbody").innerHTML = "";
+  basket.forEach(showProduct);
+}
+
+function showBasketsTotals() {
+  const totalProducts = basket.length;
+  document.querySelector("#total-products").textContent = totalProducts;
+
+  let totalInBasket = 0;
+  for (const productInBasket of basket) {
+    totalInBasket += productInBasket.count;
+  }
+  document.querySelector("#total-in-basket").textContent = totalInBasket;
+
+  let totalPrice = 0;
+  let totalWeight = 0;
+
+  for (const productInBasket of basket) {
+    totalPrice += productInBasket.product.price * productInBasket.count;
+    totalWeight += productInBasket.product.weight * productInBasket.counts;
+  }
+  document.querySelector("#total-price").textContent = totalPrice;
+  document.querySelector("#total-weight").textContent = totalWeight;
+
+  if (totalWeight < 2000) {
   }
 }
 // 2. Lav en funktion `addToBasket` der modtager et produkt,
